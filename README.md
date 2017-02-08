@@ -1,0 +1,2 @@
+# Linux-OS-
+ • with bare boot up code, construct a Linux based operating system from scratch, including features of keyboard input to display on terminal, paging, interrupt, system call, scheduling, signals, program loader, page allocator, three terminals switches, a file system to read and write file, support at most six tasks in the three terminals.  • use RTC, real time clock, as the device for synchronization 
