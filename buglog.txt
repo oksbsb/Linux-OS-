@@ -1,0 +1,238 @@
+group name: GYMS 
+ECE391 Bug Log
+
+Checkpoint 1
+1)        Date: 10/14/2016
+        Problem: page fault 
+        Reason: paging doesn't work, CR3 register value set wrong, 
+        Solution: Use static memory to set up page table and page directory, and use ASM wrapper, correctly set register value 
+        Time to fix: 3 hours
+	who found the bug: Meng 
+	who solved the bug: Meng 
+
+
+
+2)        Date: 10/15/2016
+        Problem: fault after initializing paging
+        Reason: Large page not initialize properly
+        Solution: Set the value of register CR4 correctly
+        Time to fix: 1 hours
+	who found the bug: Shui 
+	who solved the bug: Shui 
+
+
+
+3)        Date: 10/16/2016
+	Problem: Crash after one interrupt from RTC, RTC handler doesn't work 
+	Reason: Didn’t restore the correct stack, and set the port address wrong 
+	Solution: read the document again to reset the port and Add “leave” before “iret”
+	Time to fix: 2 hours
+	who found the bug:	Guo
+	who solved the bug:	Guo 
+
+
+4)        Date: 10/16/2016
+	Problem: Can’t get continuous interrupt from RTC
+	Reason: Didn’t read again from register C of RTC
+	Solution: Read the value from register C of RTC and discard it 
+	Time to fix: 2 hours
+	who found the bug:	Guo 
+	who solved the bug:	Yan 
+
+
+Checkpoint 2
+1)        Date: 10/22/2016
+        Problem: file system directory read doesn't work properly
+        Reason: the information of directory is not stored in the data block
+        Solution: read directory content from boot block one by one
+        Time to fix: 2 hours
+	who found the bug:	Guo 
+	who solved the bug:	Guo 
+
+2)        Date: 10/23/2016
+        Problem: read_data doesn't return correct value
+        Reason: calculte the number of bytes wrong by ignoring the offset 
+        Solution: recalculate it again 
+        Time to fix: 2 hour
+	who found the bug:	Guo 
+	who solved the bug:	Shui
+
+
+3)        Date: 10/23/2016
+	Problem: terminal not scrolling up properly
+	Reason: after pressing enter_flag, we didn't update the scrolling up from the kb handler, Also we didn't check if after writing to screen a line in terminal write, we should scroll up.
+	Solution: created a function new_line which increments the screen_y, sets screen_x to 0 and then checks if we should vertical scroll.
+	Time to fix: 3 hours
+	who found the bug:	Meng 
+	who solved the bug:	Meng 
+
+
+
+4)        Date: 10/21/2016
+	Problem: terminal_read and terminal_write properly scroll but after typing more than 80 chars, terminal_read operation would not cause a vertical_scroll
+	Reason: Our keyboard handler was not keeping track of the number of characters added.
+	Solution: create a variable called char_added in the keyboard handler which is reset when enter_flag is pressed and 
+		  when we type more than 80 chars, should call new_line function in lib.c
+	Time to fix: 1 hours
+	who found the bug:	Shui
+	who solved the bug:	Yan
+
+
+
+5)        Date: 10/22/2016
+	Problem: occasionally terminal_read and write using the same buffer would lead to different outputs.
+	Reason: for(current_byte = 0; (current_byte < nbytes) && (current_byte <= MAX_CHARS); current_byte++) - we has current_byte <= nbytes by mistake.
+	Solution: Since it only occurred in a few instances, we went tested using various instances until we found one that broke it. This led us to reconsider our bounds for the for loop.
+	Time to fix: 2 hours
+	who found the bug:	Yan
+	who solved the bug:	Yan
+	
+Reason: for(current_byte = 0; (current_byte < nbytes) && (current_byte <= MAX_CHARS); current_byte++) - we has current_byte <= nbytes by mistake.
+	Solution: Since it only occured in a few instances, we went tested using various instances until we found one that broke it. This led us to reconsider our bounds for the for loop.
+	Time to fix: 2 hours
+	who found the bug:	Yan
+	who solved the bug:	Yan
+6)
+	Date: 10/20/2016
+	Problem: a parameter of a function in file system was changed when it was sent to another function
+	Solution: Comment out the set_rtc function because it messed up the stack
+	Time to fix: 4 hours
+	Who found the bug: Zhikai
+	Who solved the bug: Zhikai
+
+
+Checkpoint 3
+
+
+
+1)        Date: 11/12/2016
+        Problem: Can’t print out 1s according to rtc frequency to the screen
+        Reason: rtc function is wrong 
+        Solution: Have a function to set up a static testmode variable
+        Time to fix: 2 hours
+	who found the bug:	GUO
+	who solved the bug:	Guo
+
+2)        Date: 11/12/2016
+        Problem: ls doesn't work properly, it can print out some information but then cause page fault 
+        Reason: directory read does not work as expected, it can't read in the number of bytes input into the function
+        Solution: Make the directory read read in one file name each time called
+        Time to fix: 2 hours
+	who found the bug:	Meng 
+	who solved the bug:	Meng 
+
+
+3)        Date: 11/13/2016
+        Problem: Execute context switch not working properly.
+        Reason: arguments are pushed in the wrong order 
+        Solution: Push in the correct order.
+        Time to fix: 3 hours
+	who found the bug:	Shui
+	who solved the bug:	Shui
+
+
+4)        Date: 11/13/2016
+        Problem: No interrupt when handling the syscall.
+        Reason: The call gate of 0x80 is configured incorrectly
+        Solution: Changed the reserved bit 3 to 1 in the IDT entry for 0x80
+        Time to fix: 2 hours
+	who found the bug:	Shui
+	who solved the bug:	Shui	
+5)
+	
+	Date: 11/3/2016
+	Problem: Our OS cannot boot up
+	Solution: In initialize_idt function, we put an if-else statement in the wrong place and initialized idt in the wrong way
+	Time to fix: 5 hours
+	Who found the bug: TA
+	Who solved the bug: Yu  
+
+
+Checkpoint 4
+1)        Date: 11/26/2016
+        Problem: syserr doesn't work properly, test 4, 5, 6 not passed
+        Reason: Input validity not checked
+        Solution: Check the input of vid_map, fix some errors of system call read
+        Time to fix: 1 hour
+	who found the bug:	Meng 
+	who solved the bug:	Meng 
+
+
+2)        Date: 11/27/2016
+        Problem: fish doesn't work, weird zeros appear on the screen
+        Reason: function read_data doesn't add '\0' after read the string
+        Solution: Add '\0' at the end of buffer
+        Time to fix: 1 hour
+	who found the bug:	Meng 
+	who solved the bug:	Meng 
+
+3)        Date: 11/27/2016
+        Problem: Fish executes at a low frequency
+        Reason: function read_data doesn't add '\0' after read the string
+        Solution: Write_rtc has wrong parameter order
+        Time to fix: 1 hour
+	who found the bug:	Meng 
+	who solved the bug:	Meng 
+4)
+	Date: 11/12/2016
+	Problem: our OS executes invalid instructions such as “hellp” after it executed “hello”
+	Solution: the uninitialized local variable “file_dentry” in execute system call was last instruction string instead of garbage; we added a sanity check by returning -1 if read_dentry_by_name returns -1.
+	Time to fix: 3 hours
+	Who found the bug: Shuijing
+	Who solved the bug: Shuijing
+5)
+	Date: 11/15/2016
+	Problem: grep terminated abnormally
+	Solution: the read_file function returned -1 if length of file >= 32; we changed “>=” to “>”
+	Time to fix: 3 hours
+	Who found the bug: Shuijing
+	Who solved the bug: Shuijing
+6)
+	Date: 11/19/2016
+	Problem: Fish does not move on screen, it was still
+	Solution: In read_rtc function, the volatile variable clobbers eax, so we saved eax in a local variable and restored it later.
+	Time to fix: 4 hours
+	Who found the bug: Shuijing
+	Who solved the bug: Shuijing
+7)
+	Date: 11/20/2016
+	Problem: Fish moved way too slowly
+	Solution: The order of parameters of write_rtc function is wrong, frequency is the second parameter instead of the third one.
+	Time to fix: 2 hours
+	Who found the bug: Shuijing
+	Who solved the bug: Yu
+
+
+Checkpoint 5
+1)        Date: 12/03/2016
+        Problem: Run pingpong in one terminal, it also affect the other terminals
+        Reason: Write to the screen when the process should not; The position info is mixed up; for those process run in the background, cursor is set
+        Solution: Write to screen or buffer according to the process cur_pcb and active terminal id; Store screen_x and screen_y for each terminal separately; separate terminal read and write
+        Time to fix: 5 hours
+	who found the bug:	Guo 
+	who solved the bug:	Yan 
+
+
+2)        Date: 12/03/2016
+        Problem: Race condition when execute and halt from shell, or other processes. Get corrupted stack sometimes
+        Solution: Put execute and halt all into two critical sections
+        Time to fix: 4 hours
+	who found the bug:	Guo 
+	who solved the bug:	Meng 
+3)  
+	Date: 12/4/2016
+	Problem: Our OS cannot boot up after adding two terminals
+	Solution: boot three shells one by one instead of booting all of them in one single function
+	Time to fix: 2 days
+	Who found the bug: Yu
+	Who solved the bug: Yu
+
+
+
+
+
+
+
+
+
+
